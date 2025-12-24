@@ -5,3 +5,12 @@ This project has a minimal setup of Hardhat 3 Beta, without any plugins.
 ## What's included?
 
 The project includes native support for TypeScript, Hardhat scripts, tasks, and support for Solidity compilation and tests.
+
+## Testing
+This project was manually tested using Hardhat local network by:
+- Creating products
+- Transferring ownership
+- Verifying product history
+
+Automated tests will be added in future versions.
+
