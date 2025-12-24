@@ -14,9 +14,17 @@ contract SupplyChain {
         bool exists;
     }
 
+    struct History {
+        address handler;
+        Role role;
+        Status status;
+        uint256 timestamp;
+    }
+
     uint256 public productCount;
 
     mapping(uint256 => Product) public products;
+    mapping(uint256 => History[]) private productHistory;
     mapping(address => Role) public roles;
 
     modifier onlyRole(Role _role) {
@@ -62,6 +70,15 @@ contract SupplyChain {
             status: Status.Created,
             exists: true
         });
+
+        productHistory[productCount].push(
+            History({
+                handler: msg.sender,
+                role: Role.Manufacturer,
+                status: Status.Created,
+                timestamp: block.timestamp
+            })
+        );
     }
 
     // ---------------- PRODUCT TRANSFER ----------------
@@ -85,5 +102,25 @@ contract SupplyChain {
 
         products[productId].currentOwner = to;
         products[productId].status = Status.InTransit;
+
+        productHistory[productId].push(
+            History({
+                handler: to,
+                role: receiverRole,
+                status: Status.InTransit,
+                timestamp: block.timestamp
+            })
+        );
+    }
+
+    // ---------------- VIEW PRODUCT HISTORY ----------------
+
+    function getProductHistory(uint256 productId)
+        external
+        view
+        productExists(productId)
+        returns (History[] memory)
+    {
+        return productHistory[productId];
     }
 }
