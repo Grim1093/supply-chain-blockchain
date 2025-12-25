@@ -20,8 +20,13 @@ Automated tests will be added in future versions.
 npx hardhat node
 ```
 2 in another terminal
-    ```npx hardhat ignition deploy ignition/modules/SupplyChain.ts --network localhost ```
+    ```
+    npx hardhat ignition deploy ignition/modules/SupplyChain.ts --network localhost 
+    ```
 3 copy the address and insert in contract js of src 
 
-4 ``` npm start ```
+4 
+```
+npm start
+ ```
 
