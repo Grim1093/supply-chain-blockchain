@@ -15,7 +15,8 @@ This project was manually tested using Hardhat local network by:
 Automated tests will be added in future versions.
 
 ## start
-1 ```
+1
+```
 npx hardhat node
 ```
 2 in another terminal
