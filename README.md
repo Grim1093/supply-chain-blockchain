@@ -17,6 +17,10 @@ Automated tests will be added in future versions.
 ## start
 1
 ```
+npm install --save-dev hardhat
+
+npx hardhat
+
 npx hardhat node
 ```
 2 in another terminal
