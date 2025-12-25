@@ -31,7 +31,7 @@ function UserRole({ account }) {
 
   return (
     <div className="card">
-      <strong>Your Role:</strong> {role}
+      <strong>🔑 Your Role:</strong> {role}
     </div>
   );
 }

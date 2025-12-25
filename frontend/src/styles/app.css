@@ -1,50 +1,100 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f7fa;
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f4f6f8;
+  color: #1f2937;
 }
 
 .container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+
+.card {
+  background: #ffffff;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .card {
-  background: white;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
+  background: #ffffff;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #111827;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+h4 {
+  margin: 0 0 6px 0;
+}
+
+
+
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #1976d2;
 }
 
 button {
-  padding: 8px 12px;
-  margin-top: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1976d2;
+  color: #ffffff;
+  font-size: 14px;
   cursor: pointer;
 }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
+button:hover {
+  background-color: #1565c0;
 }
 
-select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-}
 
 .error {
   color: #d32f2f;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 6px;
 }
 
 .success {
   color: #2e7d32;
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 6px;
 }
+
 
 .card strong {
   color: #333;
@@ -57,21 +107,21 @@ select {
 }
 
 .timeline {
-  margin-top: 15px;
+  margin-top: 20px;
   border-left: 3px solid #1976d2;
-  padding-left: 15px;
+  padding-left: 22px;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 20px;
+  padding-bottom: 24px;
 }
 
 .timeline-item::before {
   content: "";
   position: absolute;
-  left: -10px;
-  top: 4px;
+  left: -13px;
+  top: 6px;
   width: 14px;
   height: 14px;
   background-color: #1976d2;
@@ -79,15 +129,17 @@ select {
 }
 
 .timeline-title {
-  font-weight: bold;
-  color: #333;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
 .timeline-meta {
   font-size: 13px;
-  color: #666;
-  margin-top: 2px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  word-break: break-all;
 }
+
 
 .timeline {
   margin-top: 20px;
@@ -128,3 +180,30 @@ select {
   margin-bottom: 2px;
   word-break: break-all;    /* prevents address overflow */
 }
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 20px 0;
+}
+.section-header svg {
+  font-size: 16px;
+}
+
+

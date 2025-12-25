@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import {
+  FaUserCircle,
+  FaUserShield,
+  FaExchangeAlt,
+  FaSearch
+} from "react-icons/fa";
 
 import WalletConnect from "./components/WalletConnect";
 import AssignRole from "./components/AssignRole";
@@ -43,18 +49,49 @@ function App() {
         <WalletConnect setAccount={setAccount} />
       ) : (
         <>
-          <p>Connected: {account}</p>
-          <UserRole account={account} />
+          <div className="section">
+          <div className="section-header">
+            <FaUserCircle />User Information</div>
 
-          {/* Manufacturer Only */}
-          {roleId === 1 && <AssignRole />}
-          {roleId === 1 && <CreateProduct />}
+          <div className="card">
+          <p><strong>Wallet:</strong> {account}</p>
+          </div>
 
-          {/* Manufacturer & Distributor */}
-          {(roleId === 1 || roleId === 2) && <TransferProduct />}
+        <UserRole account={account} />
+      </div>
 
-          {/* Everyone */}
-          <ProductHistory />
+      <div className="section-divider" />
+
+      {/* 🔹 ADMIN SECTION */}
+      {roleId === 1 && (
+        <div className="section">
+        <div className="section-header">
+          <FaUserShield />Admin Panel</div>
+        <AssignRole />
+      </div>
+  )}
+
+    {roleId === 1 && <div className="section-divider" />}
+
+  {/* 🔹 ACTIONS SECTION */}
+  {(roleId === 1 || roleId === 2) && (
+    <div className="section">
+      <div className="section-header">
+        <FaExchangeAlt />Supply Chain Actions</div>
+
+      {roleId === 1 && <CreateProduct />}
+      <TransferProduct />
+    </div>
+  )}
+
+  {(roleId === 1 || roleId === 2) && <div className="section-divider" />}
+
+  {/* 🔹 VERIFICATION SECTION */}
+  <div className="section">
+    <div className="section-header">
+      <FaSearch />Product Verification</div>
+    <ProductHistory />
+  </div>
         </>
       )}
     </div>
