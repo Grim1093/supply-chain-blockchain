@@ -19,9 +19,11 @@ function CreateProduct() {
     await tx.wait();
 
     alert("Product created!");
+    console.log(await provider.getCode(CONTRACT_ADDRESS));
 
     const id = await contract.productCount();
-    alert(`Product created with ID: ${id}`);
+    alert(`Product created with ID: ${Number(id)}`);
+
   }
 
   return (
