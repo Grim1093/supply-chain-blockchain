@@ -14,3 +14,13 @@ This project was manually tested using Hardhat local network by:
 
 Automated tests will be added in future versions.
 
+## start
+1 ```
+npx hardhat node
+```
+2 in another terminal
+    ```npx hardhat ignition deploy ignition/modules/SupplyChain.ts --network localhost ```
+3 copy the address and insert in contract js of src 
+
+4 ``` npm start ```
+
