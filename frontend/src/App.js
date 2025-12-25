@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import WalletConnect from "./components/WalletConnect";
+import CreateProduct from "./components/CreateProduct";
+import TransferProduct from "./components/TransferProduct";
+import ProductHistory from "./components/ProductHistory";
+import "./styles/app.css";
 
 function App() {
+  const [account, setAccount] = useState(null);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <h1>Supply Chain Tracker</h1>
+
+      {!account ? (
+        <WalletConnect setAccount={setAccount} />
+      ) : (
+        <>
+          <p>Connected: {account}</p>
+          <CreateProduct />
+          <TransferProduct />
+          <ProductHistory />
+        </>
+      )}
     </div>
   );
 }
