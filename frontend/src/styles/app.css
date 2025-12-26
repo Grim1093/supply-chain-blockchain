@@ -4,10 +4,17 @@
 
 body {
   margin: 0;
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* 隼 CHANGE: Set Rajdhani as the primary font */
+  font-family: "Rajdhani", sans-serif;
+  
   background-color: #f0f2f5;
   color: #1f2937;
   overflow-x: hidden;
+  
+  /* 隼 TWEAK: Rajdhani is slightly smaller/condensed, so we bump the size and weight */
+  font-size: 18px; 
+  font-weight: 500; /* Makes body text more legible */
+  letter-spacing: 0.02em; /* Adds a bit of techy breathing room */
 }
 
 .container {
@@ -20,7 +27,7 @@ body {
 .card {
   background: #ffffff;
   padding: 24px 28px;
-  border-radius: 20px;
+  border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
   border: 1px solid rgba(229, 231, 235, 0.5);
@@ -30,7 +37,7 @@ body {
 }
 
 .hover-card:hover {
-  transform: translateY(-4px);
+  /*transform: translateY(-4px);*/
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
@@ -46,31 +53,56 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 40px;
-  color: #111827;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  background: linear-gradient(to right, #111827, #4b5563);
+  
+  /* 隼 NEW FONT SETTINGS */
+  font-family: 'Rajdhani', sans-serif; /* Tech feel */
+  text-transform: uppercase;                 /* Stronger presence */
+  letter-spacing: -0.05em;                   /* Tighter, more modern */
+  font-size: 3.5rem;                         /* Bigger impact */
+  font-weight: 700;
+
+  /* 隼 YOUR EXISTING GRADIENT (Keep this!) */
+  background: linear-gradient(
+    to right, 
+    #111827, 
+    #1976d2, 
+    #8b5cf6, 
+    #111827
+  );
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: shine 4s linear infinite;
+  
+  /* 隼 OPTIONAL: A subtle drop shadow to lift it off the page */
+  filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1)); 
+}
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
 }
 
 h3 {
-  margin-top: 0;
+  font-weight: 700;
+  text-transform: uppercase; /* Headers look great uppercase in Rajdhani */
+  letter-spacing: 0.03em;
+  font-size: 1.3rem;
   margin-bottom: 16px;
-  font-size: 1.1rem;
 }
-
 h4 { margin: 0 0 6px 0; }
 
 /* 🔹 Inputs & Buttons */
 input, select {
+  font-family: "Rajdhani", sans-serif;
   width: 100%;
   padding: 12px 16px;
   margin-top: 8px;
   margin-bottom: 16px;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  font-size: 15px;
+  font-size: 17px;
+  font-weight: 600;
   transition: all 0.2s ease;
   background-color: #f9fafb;
 }
@@ -83,6 +115,7 @@ input:focus, select:focus {
 }
 
 button {
+  font-family: "Rajdhani", sans-serif;
   width: 100%;
   padding: 12px 20px;
   border-radius: 8px;
@@ -116,6 +149,7 @@ button:active { transform: translateY(0); }
 
 /* 🔹 Wallet Address */
 .wallet-address {
+  font-family: 'Rajdhani', sans-serif;
   display: inline-block;
   font-family: 'Roboto Mono', monospace;
   background: #f1f5f9;
@@ -232,3 +266,95 @@ button:active { transform: translateY(0); }
 .error { color: #ef4444; font-size: 13px; margin-top: 4px; }
 .success { color: #10b981; font-size: 13px; margin-top: 4px; }
 .note { font-size: 14px; color: #666; margin-bottom: 10px; }
+
+
+/* 🔹 Custom Dropdown Styles */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  font-family: "Rajdhani", sans-serif;
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: #1f2937;
+}
+
+.dropdown-header:hover {
+  background-color: #fff;
+  border-color: #b0b0b0;
+}
+
+.dropdown-header.open {
+  border-color: #1976d2;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.arrow {
+  font-size: 12px;
+  color: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* 🔹 The Dropdown Menu List */
+.dropdown-options {
+  position: absolute;
+  top: 110%; /* Just below the header */
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 50; /* Ensure it floats above other content */
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.15s ease;
+  color: #4b5563;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+  color: #1976d2;
+}
+
+.dropdown-item.selected {
+  background-color: #eff6ff; /* Light blue bg */
+  color: #1976d2;
+}
+
+.check-icon {
+  font-size: 12px;
+}
