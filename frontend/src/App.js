@@ -143,7 +143,7 @@ function App() {
                 </div>
                 {/* For long content like history, we might disable scale to prevent blurriness */}
                 <Tilt {...tiltOptions} scale={1.0} glareColor="#2e7d32">
-                  <div className="card hover-card" style={{ minHeight: "100%" }}>
+                  <div className="card hover-card border-verify" style={{ minHeight: "100%" }}>
                     <ProductHistory />
                   </div>
                 </Tilt>

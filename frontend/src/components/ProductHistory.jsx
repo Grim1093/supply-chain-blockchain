@@ -107,15 +107,22 @@ function ProductHistory() {
       {error && <div className="error status-message">{error}</div>}
       {success && <div className="success status-message">{success}</div>}
 
-      {/* 🟢 CURRENT OWNER CARD */}
+      {/* 🟢 CURRENT OWNER CARD (Fixed for Dark Mode) */}
       {currentOwner && (
-        <div className="card owner-card" style={{ marginTop: "20px", background: "#f8fafc" }}>
-          <h4 style={{ color: "#1976d2" }}>📦 Current Owner</h4>
-          <div className="timeline-meta">
-            <strong>Role:</strong> {currentOwnerRole}
+        <div 
+          className="card owner-card" 
+          style={{ 
+            marginTop: "24px", 
+            border: "1px solid #3b82f6", /* Optional: Highlights this specific card */
+            background: "linear-gradient(145deg, #1e293b, #0f172a)" /* Subtle gradient */
+          }}
+        >
+          <h4 style={{ color: "#60a5fa", marginTop: 0 }}>📦 Current Owner</h4>
+          <div className="timeline-meta" style={{ color: "#e2e8f0" }}>
+            <strong style={{ color: "#94a3b8" }}>Role:</strong> {currentOwnerRole}
           </div>
-          <div className="timeline-meta">
-            <strong>Address:</strong> {shortAddr(currentOwner)}
+          <div className="timeline-meta" style={{ color: "#e2e8f0" }}>
+            <strong style={{ color: "#94a3b8" }}>Address:</strong> {shortAddr(currentOwner)}
           </div>
         </div>
       )}
