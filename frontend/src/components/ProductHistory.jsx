@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ethers } from "ethers";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { CONTRACT_ADDRESS, ABI } from "../contract";
 
 const roleText = ["None", "Manufacturer", "Distributor", "Retailer"];
@@ -15,6 +17,35 @@ function ProductHistory() {
   const [currentOwnerRole, setCurrentOwnerRole] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  
+  const containerRef = useRef();
+
+  // 🔹 ANIMATION: Stagger Timeline & Cards
+  useGSAP(() => {
+    if (currentOwner) {
+      gsap.fromTo(".owner-card", 
+        { y: 20, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+      );
+    }
+    
+    if (history.length > 0) {
+      gsap.fromTo(".timeline-item",
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.4, stagger: 0.15, ease: "power2.out" }
+      );
+    }
+  }, { scope: containerRef, dependencies: [history, currentOwner] });
+
+  // 🔹 ANIMATION: Error/Success Feedback
+  useGSAP(() => {
+    if (error || success) {
+      gsap.fromTo(".status-message",
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.4, ease: "power2.out" }
+      );
+    }
+  }, { scope: containerRef, dependencies: [error, success] });
 
   async function fetchHistory() {
     setError("");
@@ -34,11 +65,7 @@ function ProductHistory() {
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
-        ABI,
-        provider
-      );
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
       // 1️⃣ Fetch product
       const product = await contract.products(productId);
@@ -65,24 +92,25 @@ function ProductHistory() {
   }
 
   return (
-    <div className="card">
+    <div ref={containerRef}>
       <h3>Product Timeline</h3>
 
-      <input
-        placeholder="Product ID"
-        value={productId}
-        onChange={(e) => setProductId(e.target.value)}
-      />
+      <div className="input-group">
+        <input
+          placeholder="Product ID"
+          value={productId}
+          onChange={(e) => setProductId(e.target.value)}
+        />
+        <button onClick={fetchHistory}>View Timeline</button>
+      </div>
 
-      <button onClick={fetchHistory}>View Timeline</button>
-
-      {error && <div className="error">{error}</div>}
-      {success && <div className="success">{success}</div>}
+      {error && <div className="error status-message">{error}</div>}
+      {success && <div className="success status-message">{success}</div>}
 
       {/* 🟢 CURRENT OWNER CARD */}
       {currentOwner && (
-        <div className="card" style={{ marginTop: "15px" }}>
-          <h4>📦 Current Owner</h4>
+        <div className="card owner-card" style={{ marginTop: "20px", background: "#f8fafc" }}>
+          <h4 style={{ color: "#1976d2" }}>📦 Current Owner</h4>
           <div className="timeline-meta">
             <strong>Role:</strong> {currentOwnerRole}
           </div>
@@ -106,9 +134,7 @@ function ProductHistory() {
               </div>
               <div className="timeline-meta">
                 Time:{" "}
-                {new Date(
-                  Number(h.timestamp) * 1000
-                ).toLocaleString()}
+                {new Date(Number(h.timestamp) * 1000).toLocaleString()}
               </div>
             </div>
           ))}

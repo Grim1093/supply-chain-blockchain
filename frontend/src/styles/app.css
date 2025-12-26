@@ -5,205 +5,230 @@
 body {
   margin: 0;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #f4f6f8;
+  background-color: #f0f2f5;
   color: #1f2937;
+  overflow-x: hidden;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 0 20px;
 }
 
-
+/* 🔹 Card Styling */
 .card {
   background: #ffffff;
-  padding: 18px 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  padding: 24px 28px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.card {
-  background: #ffffff;
-  padding: 18px 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+.hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+.border-admin:hover { border-color: #d32f2f; }
+.border-action:hover { border-color: #1976d2; }
 
+/* 🔹 Top Section Specifics */
+.top-section {
+  margin-bottom: 24px; /* Matches the gap of the bento grid */
+}
+
+/* 🔹 Typography */
 h1 {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   color: #111827;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background: linear-gradient(to right, #111827, #4b5563);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 h3 {
   margin-top: 0;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
 }
 
-h4 {
-  margin: 0 0 6px 0;
-}
+h4 { margin: 0 0 6px 0; }
 
-
-
-
-input,
-select {
+/* 🔹 Inputs & Buttons */
+input, select {
   width: 100%;
-  padding: 10px 12px;
-  margin-top: 6px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  background-color: #f9fafb;
 }
 
-input:focus,
-select:focus {
+input:focus, select:focus {
   outline: none;
   border-color: #1976d2;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
 button {
-  padding: 10px 16px;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
   border: none;
   background-color: #1976d2;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: auto;
 }
 
 button:hover {
   background-color: #1565c0;
+  transform: translateY(-1px);
 }
 
+button:active { transform: translateY(0); }
 
-.error {
-  color: #d32f2f;
-  font-size: 13px;
-  margin-top: 6px;
+/* Input Group */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
+.input-group input { margin: 0; flex: 1; }
+.input-group button { width: auto; margin: 0; }
 
-.success {
-  color: #2e7d32;
-  font-size: 13px;
-  margin-top: 6px;
-}
-
-
-.card strong {
-  color: #333;
-}
-
-.note {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.timeline {
-  margin-top: 20px;
-  border-left: 3px solid #1976d2;
-  padding-left: 22px;
-}
-
-.timeline-item {
-  position: relative;
-  padding-bottom: 24px;
-}
-
-.timeline-item::before {
-  content: "";
-  position: absolute;
-  left: -13px;
-  top: 6px;
-  width: 14px;
-  height: 14px;
-  background-color: #1976d2;
-  border-radius: 50%;
-}
-
-.timeline-title {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.timeline-meta {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 2px;
+/* 🔹 Wallet Address */
+.wallet-address {
+  display: inline-block;
+  font-family: 'Roboto Mono', monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  color: #475569;
   word-break: break-all;
 }
 
-
-.timeline {
-  margin-top: 20px;
-  border-left: 3px solid #1976d2;
-  padding-left: 25px;
-}
-
-.timeline-item {
-  position: relative;
-  padding-bottom: 25px;
-}
-
-.timeline-item:last-child {
-  padding-bottom: 5px;
-}
-
-.timeline-item::before {
-  content: "";
-  position: absolute;
-  left: -14px;
-  top: 6px;                 /* aligns dot with title */
-  width: 14px;
-  height: 14px;
-  background-color: #1976d2;
-  border-radius: 50%;
-}
-
-.timeline-title {
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 6px;
-}
-
-.timeline-meta {
-  font-size: 13px;
-  color: #555;
-  margin-left: 2px;
-  margin-bottom: 2px;
-  word-break: break-all;    /* prevents address overflow */
-}
-
-.section {
-  margin-bottom: 30px;
-}
-
+/* 🔹 Headers */
 .section-header {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1976d2;
-  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+.admin-header { color: #d32f2f; }
+.action-header { color: #0288d1; }
+.verify-header { color: #2e7d32; }
+
+.section-header svg { font-size: 16px; }
+
 .section-divider {
   height: 1px;
-  background-color: #e5e7eb;
-  margin: 20px 0;
-}
-.section-header svg {
-  font-size: 16px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+  margin: 30px 0;
 }
 
+/* 🔹 BENTO GRID LAYOUT */
+.bento-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
+.bento-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+@media (min-width: 900px) {
+  .bento-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.timeline {
+  margin-top: 20px;
+  border-left: 3px solid #1976d2;
+  /* INCREASED PADDING: Pushes text further right to prevent overlap */
+  padding-left: 40px; 
+  position: relative;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 30px; /* More vertical breathing room */
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  /* CALCULATED POSITION: 
+     -40px (parent padding) 
+     - 6px (half dot width roughly) 
+     + 1.5px (half border width) 
+     = approx -44px to center on line 
+  */
+  left: -51px; 
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  background-color: #ffffff;
+  border: 3px solid #1976d2;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  z-index: 1; /* Ensures dot stays on top of the line */
+}
+
+.timeline-item:hover::before {
+  transform: scale(1.3);
+  background-color: #1976d2; /* Optional: Make dot solid blue on hover */
+}
+
+.timeline-title {
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.timeline-meta {
+  font-size: 13.5px;
+  color: #6b7280;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* 🔹 Utilities */
+.error { color: #ef4444; font-size: 13px; margin-top: 4px; }
+.success { color: #10b981; font-size: 13px; margin-top: 4px; }
+.note { font-size: 14px; color: #666; margin-bottom: 10px; }

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ethers } from "ethers";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { CONTRACT_ADDRESS, ABI } from "../contract";
 
 function TransferProduct() {
@@ -7,6 +9,19 @@ function TransferProduct() {
   const [to, setTo] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const containerRef = useRef();
+
+  useGSAP(() => {
+    if (error) {
+      gsap.fromTo(".error-shake", { x: -5 }, { x: 5, duration: 0.1, repeat: 3, yoyo: true });
+    }
+    if (error || success) {
+      gsap.fromTo(".status-message",
+        { height: 0, opacity: 0, marginTop: 0 },
+        { height: "auto", opacity: 1, marginTop: 10, duration: 0.4, ease: "power2.out" }
+      );
+    }
+  }, { scope: containerRef, dependencies: [error, success] });
 
   async function transfer() {
     setError("");
@@ -44,16 +59,18 @@ function TransferProduct() {
   }
 
   return (
-    <div className="card">
+    <div ref={containerRef}>
       <h3>Transfer Product</h3>
 
       <input
+        className={error ? "error-shake" : ""}
         placeholder="Product ID"
         value={productId}
         onChange={(e) => setProductId(e.target.value)}
       />
 
       <input
+        className={error ? "error-shake" : ""}
         placeholder="Receiver address"
         value={to}
         onChange={(e) => setTo(e.target.value)}
@@ -61,8 +78,8 @@ function TransferProduct() {
 
       <button onClick={transfer}>Transfer</button>
 
-      {error && <div className="error">{error}</div>}
-      {success && <div className="success">{success}</div>}
+      {error && <div className="error status-message">{error}</div>}
+      {success && <div className="success status-message">{success}</div>}
     </div>
   );
 }
