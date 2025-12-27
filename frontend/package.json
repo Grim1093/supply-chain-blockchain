@@ -12,6 +12,7 @@
     "gsap": "^3.12.5",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-hot-toast": "^2.6.0",
     "react-parallax-tilt": "^1.7.315",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

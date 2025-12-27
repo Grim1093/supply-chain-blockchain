@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CONTRACT_ADDRESS, ABI } from "../contract";
+import toast from "react-hot-toast";
 
 function CreateProduct() {
   const [name, setName] = useState("");
@@ -29,7 +30,7 @@ function CreateProduct() {
     setSuccess("");
 
     if (!name.trim()) {
-      setError("Product name cannot be empty");
+      toast.error("Product name cannot be empty");
       return;
     }
 
@@ -45,7 +46,7 @@ function CreateProduct() {
       setSuccess(`Product created with ID: ${id.toString()}`);
       setName("");
     } catch (err) {
-      setError("Transaction failed or rejected");
+      toast.error("Transaction failed or rejected");
     }
   }
 

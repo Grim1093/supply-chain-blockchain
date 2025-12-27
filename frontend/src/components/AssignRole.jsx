@@ -1,18 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { ethers } from "ethers";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { FaChevronDown, FaCheck } from "react-icons/fa"; // Import icons
+import toast from "react-hot-toast"; // <--- Import Toast
+import { FaChevronDown, FaCheck } from "react-icons/fa";
 import { CONTRACT_ADDRESS, ABI } from "../contract";
 
 function AssignRole() {
   const [address, setAddress] = useState("");
-  const [role, setRole] = useState(""); // Stores "2" or "3"
-  const [isOpen, setIsOpen] = useState(false); // Controls dropdown visibility
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  
-  const containerRef = useRef();
+  const [role, setRole] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef();
 
   // Close dropdown if clicking outside
@@ -26,22 +21,11 @@ function AssignRole() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useGSAP(() => {
-    if (error || success) {
-      gsap.fromTo(".status-message",
-        { height: 0, opacity: 0, marginTop: 0 },
-        { height: "auto", opacity: 1, marginTop: 10, duration: 0.4, ease: "power2.out" }
-      );
-    }
-  }, { scope: containerRef, dependencies: [error, success] });
-
-  // Handle selection
   const handleSelect = (value) => {
     setRole(value);
     setIsOpen(false);
   };
 
-  // Helper to get display text
   const getRoleLabel = () => {
     if (role === "2") return "Distributor";
     if (role === "3") return "Retailer";
@@ -49,17 +33,18 @@ function AssignRole() {
   };
 
   async function assign() {
-    setError("");
-    setSuccess("");
-
+    // 1. Validation
     if (!address || !role) {
-      setError("All fields are required");
+      toast.error("All fields are required"); // <--- Toast Error
       return;
     }
     if (!ethers.isAddress(address)) {
-      setError("Invalid wallet address");
+      toast.error("Invalid wallet address");
       return;
     }
+
+    // 2. Loading Toast
+    const toastId = toast.loading("Assigning role on blockchain...");
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -69,16 +54,20 @@ function AssignRole() {
       const tx = await contract.assignRole(address, role);
       await tx.wait();
 
-      setSuccess("Role assigned successfully!");
+      // 3. Success Toast (updates the loading toast)
+      toast.success("Role assigned successfully!", { id: toastId });
+      
       setAddress("");
       setRole("");
     } catch (err) {
-      setError("Transaction failed or rejected");
+      console.error(err);
+      // 4. Error Toast (updates the loading toast)
+      toast.error("Transaction failed or rejected", { id: toastId });
     }
   }
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', zIndex: 10 }}>
+    <div style={{ position: 'relative', zIndex: 10 }}>
       <h3>Assign Role (Admin)</h3>
 
       <input
@@ -87,7 +76,6 @@ function AssignRole() {
         onChange={(e) => setAddress(e.target.value)}
       />
 
-      {/* 隼 CUSTOM DROPDOWN */}
       <div className="custom-dropdown" ref={dropdownRef}>
         <div 
           className={`dropdown-header ${isOpen ? "open" : ""}`} 
@@ -118,9 +106,8 @@ function AssignRole() {
       </div>
 
       <button onClick={assign} style={{ marginTop: "16px" }}>Assign Role</button>
-
-      {error && <div className="error status-message">{error}</div>}
-      {success && <div className="success status-message">{success}</div>}
+      
+      {/* REMOVED: Old error/success divs */}
     </div>
   );
 }

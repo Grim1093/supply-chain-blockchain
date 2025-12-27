@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { ethers } from "ethers";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import toast from "react-hot-toast"; // <--- Import Toast
 import { CONTRACT_ADDRESS, ABI } from "../contract";
 
 const roleText = ["None", "Manufacturer", "Distributor", "Retailer"];
@@ -15,8 +16,6 @@ function ProductHistory() {
   const [history, setHistory] = useState([]);
   const [currentOwner, setCurrentOwner] = useState(null);
   const [currentOwnerRole, setCurrentOwnerRole] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   
   const containerRef = useRef();
 
@@ -37,31 +36,23 @@ function ProductHistory() {
     }
   }, { scope: containerRef, dependencies: [history, currentOwner] });
 
-  // 🔹 ANIMATION: Error/Success Feedback
-  useGSAP(() => {
-    if (error || success) {
-      gsap.fromTo(".status-message",
-        { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.4, ease: "power2.out" }
-      );
-    }
-  }, { scope: containerRef, dependencies: [error, success] });
-
   async function fetchHistory() {
-    setError("");
-    setSuccess("");
+    // 1. Reset & Validation
     setHistory([]);
     setCurrentOwner(null);
 
     if (!productId) {
-      setError("Please enter a Product ID");
+      toast.error("Please enter a Product ID");
       return;
     }
 
     if (isNaN(productId) || Number(productId) <= 0) {
-      setError("Product ID must be a valid number");
+      toast.error("Product ID must be a valid number");
       return;
     }
+
+    // 2. Loading Toast
+    const toastId = toast.loading("Fetching product details...");
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -80,14 +71,18 @@ function ProductHistory() {
       const data = await contract.getProductHistory(productId);
 
       if (data.length === 0) {
-        setError("No history found for this Product ID");
+        toast.error("No history found for this Product ID", { id: toastId });
         return;
       }
 
       setHistory(data);
-      setSuccess("Product details loaded");
-    } catch {
-      setError("Invalid Product ID or product does not exist");
+      // 3. Success Toast
+      toast.success("Product details loaded", { id: toastId });
+
+    } catch (err) {
+      console.error(err);
+      // 4. Error Toast
+      toast.error("Invalid Product ID or product does not exist", { id: toastId });
     }
   }
 
@@ -104,17 +99,14 @@ function ProductHistory() {
         <button onClick={fetchHistory}>View Timeline</button>
       </div>
 
-      {error && <div className="error status-message">{error}</div>}
-      {success && <div className="success status-message">{success}</div>}
-
-      {/* 🟢 CURRENT OWNER CARD (Fixed for Dark Mode) */}
+      {/* 🟢 CURRENT OWNER CARD (Dark Mode Optimized) */}
       {currentOwner && (
         <div 
           className="card owner-card" 
           style={{ 
             marginTop: "24px", 
-            border: "1px solid #3b82f6", /* Optional: Highlights this specific card */
-            background: "linear-gradient(145deg, #1e293b, #0f172a)" /* Subtle gradient */
+            border: "1px solid #3b82f6", 
+            background: "linear-gradient(145deg, #1e293b, #0f172a)" 
           }}
         >
           <h4 style={{ color: "#60a5fa", marginTop: 0 }}>📦 Current Owner</h4>

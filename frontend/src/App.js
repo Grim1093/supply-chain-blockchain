@@ -2,13 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { ethers } from "ethers";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import Tilt from "react-parallax-tilt"; // <--- 1. Import Tilt
+import Tilt from "react-parallax-tilt"; 
+import { Toaster } from "react-hot-toast"; // <--- 1. IMPORT THIS
 import {
   FaUserCircle,
   FaUserShield,
   FaExchangeAlt,
   FaSearch
 } from "react-icons/fa";
+
 import WalletConnect from "./components/WalletConnect";
 import AssignRole from "./components/AssignRole";
 import CreateProduct from "./components/CreateProduct";
@@ -61,23 +63,49 @@ function App() {
     }
   }, { scope: appRef, dependencies: [account] });
 
-  // Common configuration for the tilt effect
+  // Tilt Options
   const tiltOptions = {
-    tiltMaxAngleX: 10,
-    tiltMaxAngleY: 10,
+    tiltMaxAngleX: 5, // Reduced slightly for better readability
+    tiltMaxAngleY: 5,
     scale: 1.02,
-    transitionSpeed: 2500, // Smooth return
+    transitionSpeed: 2500,
     glareEnable: true,
-    glareMaxOpacity: 0.3,
+    glareMaxOpacity: 0.1, // Subtle glare
     glarePosition: "bottom",
-    glareBorderRadius: "20px" // Matches your CSS border-radius
+    glareBorderRadius: "12px"
   };
 
   return (
-
-    
     <div className="container" ref={appRef}>
-      
+      {/* 隼 2. ADD TOASTER CONFIGURATION HERE */}
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#1e293b',
+            color: '#f8fafc',
+            border: '1px solid #334155',
+            padding: '16px',
+            borderRadius: '8px',
+            fontFamily: '"Rajdhani", sans-serif',
+            fontSize: '16px',
+            fontWeight: '600',
+          },
+          success: {
+            iconTheme: {
+              primary: '#22c55e',
+              secondary: '#f8fafc',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#f8fafc',
+            },
+          },
+        }}
+      />
+
       <h1 className="app-title">Supply Chain Tracker</h1>
 
       {!account ? (
@@ -86,12 +114,11 @@ function App() {
         </div>
       ) : (
         <>
-          {/* 隼 TOP SECTION: User Info */}
+          {/* User Info */}
           <div className="section section-card top-section">
             <div className="section-header">
               <FaUserCircle /> User Information
             </div>
-            {/* Wrap the card with Tilt */}
             <Tilt {...tiltOptions}> 
               <div className="card hover-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
@@ -103,16 +130,14 @@ function App() {
           </div>
 
           <div className="bento-container">
-            
-            {/* 争 LEFT COLUMN */}
+            {/* Left Column */}
             <div className="bento-column">
-              
               {roleId === 1 && (
                 <div className="section section-card">
                   <div className="section-header admin-header">
                     <FaUserShield /> Admin Panel
                   </div>
-                  <Tilt {...tiltOptions} glareColor="#d32f2f">
+                  <Tilt {...tiltOptions} glareColor="#ef4444">
                     <div className="card hover-card border-admin">
                       <AssignRole />
                     </div>
@@ -125,7 +150,7 @@ function App() {
                   <div className="section-header action-header">
                     <FaExchangeAlt /> Actions
                   </div>
-                  <Tilt {...tiltOptions} glareColor="#1976d2">
+                  <Tilt {...tiltOptions} glareColor="#3b82f6">
                     <div className="card hover-card border-action">
                       {roleId === 1 && <CreateProduct />}
                       <TransferProduct />
@@ -135,26 +160,23 @@ function App() {
               )}
             </div>
 
-            {/* 痩 RIGHT COLUMN */}
+            {/* Right Column */}
             <div className="bento-column">
               <div className="section section-card">
                 <div className="section-header verify-header">
                   <FaSearch /> Product Verification
                 </div>
-                {/* For long content like history, we might disable scale to prevent blurriness */}
-                <Tilt {...tiltOptions} scale={1.0} glareColor="#2e7d32">
+                <Tilt {...tiltOptions} scale={1.0} glareColor="#22c55e">
                   <div className="card hover-card border-verify" style={{ minHeight: "100%" }}>
                     <ProductHistory />
                   </div>
                 </Tilt>
               </div>
             </div>
-
           </div>
         </>
       )}
     </div>
   );
 }
-
 export default App;
