@@ -1,38 +1,20 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { ethers } from "ethers";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import toast from "react-hot-toast"; // <--- Import Toast
 import { CONTRACT_ADDRESS, ABI } from "../contract";
-import toast from "react-hot-toast";
 
 function CreateProduct() {
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const containerRef = useRef();
-
-  useGSAP(() => {
-    if (error) {
-      // Shake animation on error
-      gsap.fromTo("input", { x: -5 }, { x: 5, duration: 0.1, repeat: 3, yoyo: true });
-    }
-    if (error || success) {
-      // Slide in message
-      gsap.fromTo(".status-message",
-        { height: 0, opacity: 0, marginTop: 0 },
-        { height: "auto", opacity: 1, marginTop: 10, duration: 0.4, ease: "power2.out" }
-      );
-    }
-  }, { scope: containerRef, dependencies: [error, success] });
 
   async function create() {
-    setError("");
-    setSuccess("");
-
+    // 1. Validation
     if (!name.trim()) {
       toast.error("Product name cannot be empty");
       return;
     }
+
+    // 2. Loading Toast
+    const toastId = toast.loading("Creating product on blockchain...");
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -40,18 +22,27 @@ function CreateProduct() {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
       const tx = await contract.createProduct(name);
-      await tx.wait();
+      await tx.wait(); // Wait for transaction to be mined
 
+      // Fetch the new ID to show the user
       const id = await contract.productCount();
-      setSuccess(`Product created with ID: ${id.toString()}`);
+      
+      // 3. Success (Updates loading toast)
+      toast.success(`Product created! ID: ${id.toString()}`, { 
+        id: toastId,
+        duration: 5000 // Keep visible longer so they can read the ID
+      });
+
       setName("");
     } catch (err) {
-      toast.error("Transaction failed or rejected");
+      console.error(err);
+      // 4. Error (Updates loading toast)
+      toast.error("Transaction failed or rejected", { id: toastId });
     }
   }
 
   return (
-    <div ref={containerRef}>
+    <div>
       <h3>Create Product</h3>
 
       <input
@@ -61,9 +52,8 @@ function CreateProduct() {
       />
 
       <button onClick={create}>Create</button>
-
-      {error && <div className="error status-message">{error}</div>}
-      {success && <div className="success status-message">{success}</div>}
+      
+      {/* Old status messages removed */}
     </div>
   );
 }
