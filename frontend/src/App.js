@@ -1,182 +1,144 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import Tilt from "react-parallax-tilt"; 
-import { Toaster } from "react-hot-toast"; // <--- 1. IMPORT THIS
-import {
-  FaUserCircle,
-  FaUserShield,
-  FaExchangeAlt,
-  FaSearch
-} from "react-icons/fa";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
-import WalletConnect from "./components/WalletConnect";
-import AssignRole from "./components/AssignRole";
-import CreateProduct from "./components/CreateProduct";
-import TransferProduct from "./components/TransferProduct";
-import ProductHistory from "./components/ProductHistory";
-import UserRole from "./components/UserRole";
+// Components
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Pages
+import Home from "./pages/Home";
+import Admin from "./pages/Admin";
+import Dashboard from "./pages/Dashboard";
+import Tracking from "./pages/Tracking";
 
 import { CONTRACT_ADDRESS, ABI } from "./contract";
 import "./styles/app.css";
 
-gsap.registerPlugin(useGSAP);
-
 function App() {
   const [account, setAccount] = useState(null);
   const [roleId, setRoleId] = useState(0);
-  const appRef = useRef();
+  const [isLoading, setIsLoading] = useState(true); // Blocks rendering until ready
 
+  // 🔹 UNIFIED INITIALIZATION (Fixes the Refresh Bug)
   useEffect(() => {
-    async function fetchRole() {
-      if (!account) return;
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-      try {
-        const id = await contract.roles(account);
-        setRoleId(Number(id));
-      } catch (error) {
-        console.error("Error fetching role:", error);
+    const init = async () => {
+      // 1. Check if MetaMask is installed
+      if (window.ethereum) {
+        try {
+          // 2. Check if user is already connected
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          
+          if (accounts.length > 0) {
+            const currentAccount = accounts[0];
+            setAccount(currentAccount);
+
+            // 3. ⚡ FETCH ROLE IMMEDIATELY (Before rendering)
+            // We do this here so roleId is ready exactly when isLoading becomes false
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+            const id = await contract.roles(currentAccount);
+            setRoleId(Number(id));
+            console.log("✅ Session Restored. Role:", Number(id));
+          }
+        } catch (error) {
+          console.error("Initialization error:", error);
+        }
       }
-    }
-    fetchRole();
-  }, [account]);
+      
+      // 4. Finish Loading (Only now do we render the Routes)
+      setIsLoading(false);
+    };
 
-  // 隼 ANIMATION: Entrance
-  useGSAP(() => {
-    gsap.from(".app-title", { y: -50, opacity: 0, duration: 1, ease: "power3.out" });
+    init();
     
-    if (!account) {
-      gsap.from(".login-container", { scale: 0.8, opacity: 0, duration: 0.8, ease: "back.out(1.7)" });
-    } else {
-      const tl = gsap.timeline();
-      tl.fromTo(".top-section", 
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
-      );
-      tl.fromTo(".bento-column", 
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out" },
-        "-=0.4"
-      );
+    // Optional: Listen for account changes in MetaMask (e.g. user switches wallet)
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        window.location.reload(); // Simplest way to handle account switch is reload
+      });
     }
-  }, { scope: appRef, dependencies: [account] });
+  }, []);
 
-  // Tilt Options
-  const tiltOptions = {
-    tiltMaxAngleX: 5, // Reduced slightly for better readability
-    tiltMaxAngleY: 5,
-    scale: 1.02,
-    transitionSpeed: 2500,
-    glareEnable: true,
-    glareMaxOpacity: 0.1, // Subtle glare
-    glarePosition: "bottom",
-    glareBorderRadius: "12px"
+  const logout = () => {
+    setAccount(null);
+    setRoleId(0);
   };
 
+  // 🔹 LOADING SCREEN (Prevents "Access Denied" redirects while checking)
+  if (isLoading) {
+    return (
+      <div style={{ 
+        height: "100vh", 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        background: "#0f172a", 
+        color: "#38bdf8",
+        fontFamily: '"Rajdhani", sans-serif',
+        fontSize: "1.5rem",
+        letterSpacing: "0.1em"
+      }}>
+        INITIALIZING SECURE LINK...
+      </div>
+    );
+  }
+
   return (
-    <div className="container" ref={appRef}>
-      {/* 隼 2. ADD TOASTER CONFIGURATION HERE */}
-      <Toaster 
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: '#1e293b',
-            color: '#f8fafc',
-            border: '1px solid #334155',
-            padding: '16px',
-            borderRadius: '8px',
-            fontFamily: '"Rajdhani", sans-serif',
-            fontSize: '16px',
-            fontWeight: '600',
-          },
-          success: {
-            iconTheme: {
-              primary: '#22c55e',
-              secondary: '#f8fafc',
+    <Router>
+      <div className="app-container">
+        <Toaster 
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#1e293b',
+              color: '#f8fafc',
+              border: '1px solid #334155',
+              padding: '16px',
+              borderRadius: '8px',
+              fontFamily: '"Rajdhani", sans-serif',
             },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#f8fafc',
-            },
-          },
-        }}
-      />
+          }}
+        />
 
-      <h1 className="app-title">Supply Chain Tracker</h1>
+        {account && <Navbar roleId={roleId} onLogout={logout} />}
 
-      {!account ? (
-        <div className="login-container">
-          <WalletConnect setAccount={setAccount} />
+        <div className="main-content">
+          <Routes>
+            {/* Home Route */}
+            <Route 
+              path="/" 
+              element={<Home account={account} setAccount={setAccount} />} 
+            />
+
+            {/* Admin Route - Protected */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute roleId={roleId} allowedRoles={[1]}>
+                  <Admin />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Dashboard Route - Protected */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute roleId={roleId} allowedRoles={[1, 2]}>
+                  <Dashboard roleId={roleId} />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Tracking Route */}
+            <Route path="/track" element={<Tracking />} />
+          </Routes>
         </div>
-      ) : (
-        <>
-          {/* User Info */}
-          <div className="section section-card top-section">
-            <div className="section-header">
-              <FaUserCircle /> User Information
-            </div>
-            <Tilt {...tiltOptions}> 
-              <div className="card hover-card">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                  <p style={{ margin: 0 }}><strong>Wallet:</strong> <span className="wallet-address">{account}</span></p>
-                  <UserRole account={account} />
-                </div>
-              </div>
-            </Tilt>
-          </div>
-
-          <div className="bento-container">
-            {/* Left Column */}
-            <div className="bento-column">
-              {roleId === 1 && (
-                <div className="section section-card">
-                  <div className="section-header admin-header">
-                    <FaUserShield /> Admin Panel
-                  </div>
-                  <Tilt {...tiltOptions} glareColor="#ef4444">
-                    <div className="card hover-card border-admin">
-                      <AssignRole />
-                    </div>
-                  </Tilt>
-                </div>
-              )}
-
-              {(roleId === 1 || roleId === 2) && (
-                <div className="section section-card">
-                  <div className="section-header action-header">
-                    <FaExchangeAlt /> Actions
-                  </div>
-                  <Tilt {...tiltOptions} glareColor="#3b82f6">
-                    <div className="card hover-card border-action">
-                      {roleId === 1 && <CreateProduct />}
-                      <TransferProduct />
-                    </div>
-                  </Tilt>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column */}
-            <div className="bento-column">
-              <div className="section section-card">
-                <div className="section-header verify-header">
-                  <FaSearch /> Product Verification
-                </div>
-                <Tilt {...tiltOptions} scale={1.0} glareColor="#22c55e">
-                  <div className="card hover-card border-verify" style={{ minHeight: "100%" }}>
-                    <ProductHistory />
-                  </div>
-                </Tilt>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+      </div>
+    </Router>
   );
 }
+
 export default App;

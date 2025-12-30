@@ -101,13 +101,20 @@ contract SupplyChain {
         );
 
         products[productId].currentOwner = to;
-        products[productId].status = Status.InTransit;
+
+        // 🔹 FIX: Determine status based on who is receiving it
+        Status newStatus = Status.InTransit; 
+        if (receiverRole == Role.Retailer) {
+            newStatus = Status.Delivered; // Mark as Delivered if reaching Retailer
+        }
+
+        products[productId].status = newStatus;
 
         productHistory[productId].push(
             History({
                 handler: to,
                 role: receiverRole,
-                status: Status.InTransit,
+                status: newStatus, // Use the dynamic status here
                 timestamp: block.timestamp
             })
         );

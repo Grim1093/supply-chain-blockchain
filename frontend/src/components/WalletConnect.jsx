@@ -31,11 +31,10 @@ function WalletConnect({ setAccount }) {
   return (
     <div style={{ display: "inline-block", width: "100%" }}>
       <button 
+        className="cyber-btn"
         onClick={connect} 
         disabled={isConnecting}
-        style={{ 
-          fontSize: "16px", 
-          padding: "14px",
+        style={{
           opacity: isConnecting ? 0.7 : 1,
           cursor: isConnecting ? "not-allowed" : "pointer"
         }}
