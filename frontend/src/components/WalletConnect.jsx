@@ -19,6 +19,10 @@ function WalletConnect({ setAccount }) {
       const accounts = await provider.send("eth_requestAccounts", []);
       
       setAccount(accounts[0]);
+      
+      // 🔹 NEW: Save "Logged In" state to Local Storage
+      localStorage.setItem("isConnected", "true");
+      
       toast.success("Wallet connected!", { id: toastId });
     } catch (error) {
       console.error(error);
@@ -29,17 +33,17 @@ function WalletConnect({ setAccount }) {
   }
 
   return (
-    <div style={{ display: "inline-block", width: "100%" }}>
+    <div style={{ display: "inline-block" }}>
       <button 
         className="cyber-btn"
         onClick={connect} 
         disabled={isConnecting}
-        style={{
+        style={{ 
           opacity: isConnecting ? 0.7 : 1,
           cursor: isConnecting ? "not-allowed" : "pointer"
         }}
       >
-        {isConnecting ? "Connecting..." : "Connect Wallet"}
+        {isConnecting ? "Initializing Link..." : "Initialize Uplink"} 
       </button>
     </div>
   );

@@ -19,54 +19,70 @@ import "./styles/app.css";
 function App() {
   const [account, setAccount] = useState(null);
   const [roleId, setRoleId] = useState(0);
-  const [isLoading, setIsLoading] = useState(true); // Blocks rendering until ready
+  const [isLoading, setIsLoading] = useState(true); 
 
-  // 🔹 UNIFIED INITIALIZATION (Fixes the Refresh Bug)
+  // 1. INITIALIZATION (Handles Refresh & Persistence)
   useEffect(() => {
     const init = async () => {
-      // 1. Check if MetaMask is installed
-      if (window.ethereum) {
+      // 🔹 CHECK 1: Only auto-connect if the user didn't logout previously
+      const shouldAutoConnect = localStorage.getItem("isConnected") === "true";
+
+      if (window.ethereum && shouldAutoConnect) {
         try {
-          // 2. Check if user is already connected
           const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-          
           if (accounts.length > 0) {
             const currentAccount = accounts[0];
             setAccount(currentAccount);
 
-            // 3. ⚡ FETCH ROLE IMMEDIATELY (Before rendering)
-            // We do this here so roleId is ready exactly when isLoading becomes false
+            // Fetch role immediately
             const provider = new ethers.BrowserProvider(window.ethereum);
             const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
             const id = await contract.roles(currentAccount);
             setRoleId(Number(id));
-            console.log("✅ Session Restored. Role:", Number(id));
           }
         } catch (error) {
           console.error("Initialization error:", error);
         }
       }
-      
-      // 4. Finish Loading (Only now do we render the Routes)
       setIsLoading(false);
     };
-
     init();
-    
-    // Optional: Listen for account changes in MetaMask (e.g. user switches wallet)
+
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
-        window.location.reload(); // Simplest way to handle account switch is reload
-      });
+      window.ethereum.on('accountsChanged', () => window.location.reload());
     }
   }, []);
 
+  // 2. ROLE LISTENER (Handles New Logins)
+  useEffect(() => {
+    async function fetchRole() {
+      if (!account) {
+        setRoleId(0);
+        return;
+      }
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+        const id = await contract.roles(account);
+        console.log("👤 Account Changed. New Role ID:", Number(id)); 
+        setRoleId(Number(id));
+      } catch (error) {
+        console.error("Error fetching role:", error);
+      }
+    }
+    if (!isLoading) { 
+      fetchRole();
+    }
+  }, [account, isLoading]);
+
+  // 3. LOGOUT FUNCTION
   const logout = () => {
     setAccount(null);
     setRoleId(0);
+    // 🔹 NEW: Clear the storage flag so refresh doesn't auto-login
+    localStorage.removeItem("isConnected");
   };
 
-  // 🔹 LOADING SCREEN (Prevents "Access Denied" redirects while checking)
   if (isLoading) {
     return (
       <div style={{ 
