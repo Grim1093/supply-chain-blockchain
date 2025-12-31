@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import toast from "react-hot-toast";
 import { FaBoxOpen, FaPlus, FaFingerprint, FaClipboardCheck } from "react-icons/fa"; 
 import { CONTRACT_ADDRESS, ABI } from "../contract";
+import { playSuccess, playError } from "../utils/audio";
 
 function CreateProduct() {
   const [name, setName] = useState("");
@@ -51,10 +52,12 @@ function CreateProduct() {
       console.log("Step 7: Waiting for confirmation...");
       const receipt = await tx.wait(); 
       console.log("Step 7 Result: Transaction mined in block:", receipt.blockNumber);
+      
 
       // Fetch new ID
       const id = await contract.productCount();
       console.log("Step 8: Fetched new Product ID:", id.toString());
+      playSuccess(); 
       
       // Success Message
       toast.success(`Product Created! ID: ${id.toString()}`, { id: toastId });
@@ -72,6 +75,7 @@ function CreateProduct() {
     } catch (err) {
       console.error("--- FAILURE POINT ---");
       console.error(err);
+      playError();
       toast.error("Transaction failed. Check console.", { id: toastId });
     } finally {
       setIsCreating(false);

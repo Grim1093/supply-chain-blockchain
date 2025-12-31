@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 // Components
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import BlockchainTerminal from "./components/BlockchainTerminal";
 
 // Pages
 import Home from "./pages/Home";
@@ -152,6 +153,8 @@ function App() {
             <Route path="/track" element={<Tracking />} />
           </Routes>
         </div>
+        {/* 🔹 ADD TERMINAL HERE (Global) */}
+        {account && <BlockchainTerminal />}
       </div>
     </Router>
   );

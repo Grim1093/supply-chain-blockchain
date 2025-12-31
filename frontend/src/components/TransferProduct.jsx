@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import toast from "react-hot-toast"; 
 import { FaShippingFast, FaPaperPlane, FaReceipt, FaExchangeAlt, FaUserTag } from "react-icons/fa";
 import { CONTRACT_ADDRESS, ABI } from "../contract";
+import { playSuccess, playError } from "../utils/audio";
 
 function TransferProduct() {
   const [productId, setProductId] = useState("");
@@ -75,6 +76,8 @@ function TransferProduct() {
       await tx.wait(); 
       console.log("Step 7 Success: Transfer confirmed.");
 
+      playSuccess();
+
       // 3. Success
       toast.success("Transfer Successful!", { id: toastId });
       
@@ -92,6 +95,7 @@ function TransferProduct() {
     } catch (err) {
       console.error("--- FAILURE POINT ---");
       console.error(err);
+      playError();
       toast.error("Transfer failed. See console.", { id: toastId });
     } finally {
       setIsTransferring(false);

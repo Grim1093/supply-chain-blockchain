@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaUserShield, FaExchangeAlt, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { FaUserCircle, FaUserShield, FaExchangeAlt, FaSearch, FaSignOutAlt, FaCube } from "react-icons/fa";
 import "../styles/app.css";
 
 const Navbar = ({ roleId, onLogout }) => {
@@ -10,14 +10,22 @@ const Navbar = ({ roleId, onLogout }) => {
   const isActive = (path) => location.pathname === path ? "nav-item active" : "nav-item";
 
   const handleLogout = () => {
-    onLogout();       // Clear state in App.js
-    navigate("/");    // Redirect to Home
+    onLogout();       
+    navigate("/");    
   };
 
   return (
     <nav className="navbar">
-      <div className="nav-logo" style={{ fontWeight: "800", fontSize: "1.2rem", letterSpacing: "1px", color: "#f8fafc" }}>
-        SupplyChain <span style={{ color: "#3b82f6" }}>V1</span>
+      {/* 🔹 LOGO SECTION (Cleaned Up) */}
+      <div 
+        className="nav-logo-wrapper" 
+        onClick={() => navigate("/")} 
+        // REMOVED: title="Go to Profile"
+      >
+        <div className="logo-icon">
+          <FaCube />
+        </div>
+        <span className="logo-text">SCP</span>
       </div>
       
       <div className="nav-links">
@@ -41,23 +49,11 @@ const Navbar = ({ roleId, onLogout }) => {
           <FaSearch /> <span className="nav-text">Track</span>
         </Link>
 
-        {/* 🔹 LOGOUT BUTTON */}
         <button 
           onClick={handleLogout} 
-          className="nav-item" 
-          style={{ 
-            background: "transparent", 
-            border: "none", 
-            cursor: "pointer",
-            marginLeft: "20px",
-            borderLeft: "1px solid #334155",
-            paddingLeft: "20px",
-            borderRadius: "0",
-            marginTop: "0",
-            width: "auto"
-          }}
+          className="nav-item logout-btn"
         >
-          <FaSignOutAlt style={{ color: "#ef4444" }} /> <span className="nav-text" style={{ color: "#ef4444" }}>Logout</span>
+          <FaSignOutAlt /> <span className="nav-text">Logout</span>
         </button>
       </div>
     </nav>

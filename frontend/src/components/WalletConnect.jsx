@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import toast from "react-hot-toast";
+import { playSuccess, playError, playClick } from "../utils/audio";
 
 function WalletConnect({ setAccount }) {
   const [isConnecting, setIsConnecting] = useState(false);
 
   async function connect() {
+    playClick();
     if (!window.ethereum) {
+      playError();
       toast.error("MetaMask not found. Please install it!");
       return;
     }
@@ -22,10 +25,11 @@ function WalletConnect({ setAccount }) {
       
       // 🔹 NEW: Save "Logged In" state to Local Storage
       localStorage.setItem("isConnected", "true");
-      
+      playSuccess();
       toast.success("Wallet connected!", { id: toastId });
     } catch (error) {
       console.error(error);
+      playError();
       toast.error("Connection rejected", { id: toastId });
     } finally {
       setIsConnecting(false);
