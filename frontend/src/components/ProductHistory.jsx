@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
+import { useSearchParams } from "react-router-dom"; // 🔹 1. Import Router Hook
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import toast from "react-hot-toast";
@@ -18,6 +19,9 @@ function ProductHistory() {
   const [currentOwner, setCurrentOwner] = useState(null);
   const [currentOwnerRole, setCurrentOwnerRole] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // 🔹 2. Initialize URL Params
+  const [searchParams] = useSearchParams();
   
   const containerRef = useRef();
 
@@ -38,28 +42,32 @@ function ProductHistory() {
     }
   }, { scope: containerRef, dependencies: [history, currentOwner] });
 
-  async function fetchHistory() {
+  // 🔹 3. Refactored Fetch Function (Wrapped in useCallback)
+  // Accepts 'customId' to allow immediate search from URL
+  const fetchHistory = useCallback(async (customId = null) => {
+    // If customId is passed (from URL), use it. Otherwise use state.
+    const targetId = customId || productId;
+
     console.log("--- START: Fetch Product History ---");
 
     // 1. Reset & Validation
     setHistory([]);
     setCurrentOwner(null);
 
-    if (!productId) {
+    if (!targetId) {
       console.error("Step 1 Failed: No Product ID");
       toast.error("Please enter a Product ID");
       return;
     }
 
-    if (isNaN(productId) || Number(productId) <= 0) {
-      console.error("Step 1 Failed: Invalid ID:", productId);
+    if (isNaN(targetId) || Number(targetId) <= 0) {
+      console.error("Step 1 Failed: Invalid ID:", targetId);
       toast.error("Product ID must be a valid number");
       return;
     }
-    console.log("Step 1: Validation passed. Searching for ID:", productId);
+    console.log("Step 1: Validation passed. Searching for ID:", targetId);
 
     setLoading(true);
-    // 2. Loading Toast
     const toastId = toast.loading("Tracing product on blockchain...");
 
     try {
@@ -69,10 +77,10 @@ function ProductHistory() {
 
       // 1️⃣ Fetch product details
       console.log("Step 3: Fetching product struct...");
-      const product = await contract.products(productId);
+      const product = await contract.products(targetId);
       console.log("Step 3 Data:", product);
 
-      if (!product.exists) { // Assuming your struct has an 'exists' boolean, or check ID
+      if (product.id.toString() === "0") { 
          throw new Error("Product does not exist");
       }
 
@@ -86,14 +94,21 @@ function ProductHistory() {
 
       // 3️⃣ Fetch history array
       console.log("Step 5: Fetching history array...");
-      const data = await contract.getProductHistory(productId);
+      const data = await contract.getProductHistory(targetId);
       console.log(`Step 5 Success: Found ${data.length} history records.`);
 
       if (data.length === 0) {
         toast.error("No history records found (Fresh Product?)", { id: toastId });
       } else {
-        setHistory(data);
-        // 3. Success Toast
+        const formattedHistory = data.map((item) => ({
+            ...item,
+            // Convert BigInts to Strings/Numbers for easier handling if needed
+            status: item.status,
+            role: item.role,
+            timestamp: item.timestamp,
+            handler: item.handler
+        }));
+        setHistory(formattedHistory);
         toast.success("Tracking Data Received", { id: toastId });
       }
       
@@ -104,14 +119,24 @@ function ProductHistory() {
       console.error(err);
       
       if (err.message.includes("Product does not exist")) {
-          toast.error(`Product #${productId} not found on chain`, { id: toastId });
+          toast.error(`Product #${targetId} not found on chain`, { id: toastId });
       } else {
-          toast.error("Failed to fetch details. See console.", { id: toastId });
+          toast.error("Failed to fetch details.", { id: toastId });
       }
     } finally {
       setLoading(false);
     }
-  }
+  }, [productId]); // End of fetchHistory
+
+  // 🔹 4. AUTO-TRIGGER: Runs on Page Load if URL has ?id=X
+  useEffect(() => {
+    const urlId = searchParams.get("id");
+    if (urlId) {
+      console.log("🔗 Deep Link Detected:", urlId);
+      setProductId(urlId); // Fill the input box visually
+      fetchHistory(urlId); // Run the search immediately
+    }
+  }, [searchParams, fetchHistory]);
 
   // Helper for Icons based on status
   const getStatusIcon = (status) => {
@@ -135,9 +160,10 @@ function ProductHistory() {
           onChange={(e) => setProductId(e.target.value)}
           disabled={loading}
           style={{ marginBottom: 0 }}
+          type="number"
         />
         <button 
-          onClick={fetchHistory} 
+          onClick={() => fetchHistory()} 
           disabled={loading}
           style={{ width: "auto", minWidth: "100px", background: loading ? "#475569" : "#22c55e", marginBottom: 0 }}
         >

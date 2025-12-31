@@ -796,3 +796,35 @@ button:active { transform: translateY(0); }
 .resize-handle:hover svg {
   color: #22c55e !important; /* Light up green on hover */
 }
+
+/* 隼 DASHBOARD GRID LAYOUT */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left side wider than right side */
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* On mobile, stack them */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tools-section .cyber-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.tools-section h3 {
+  color: #f8fafc;
+  margin-bottom: 8px;
+  font-family: "Rajdhani", sans-serif;
+  letter-spacing: 1px;
+}
