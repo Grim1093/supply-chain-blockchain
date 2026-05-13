@@ -104,7 +104,7 @@ The Ethereum blockchain acts as the immutable database. State is managed in cont
 **1\. Start Local Blockchain**
 ```
 npm install --save-dev hardhat
-
+npx hardhat
 npx hardhat node
 
 ```
@@ -123,11 +123,3 @@ cd frontend
 npm start
 
 ```
-**Directives for AI Assistant:**
-
-When I ask for help or request changes:
-
-1. Start from the basics and ask clarifying questions if requirements are ambiguous.  
-2. If adding new logic or UI flows, include console logs or visual toasts for every major step to easily identify points of failure.  
-3. Before providing code, explicitly state which file(s) will be created or modified. Wait for me to provide the current contents of those files before proceeding.  
-4. Do not provide code if I explicitly write "no code" at the end of my prompt.
