@@ -7,7 +7,7 @@ The primary objective of this project is to build a decentralized, transparent, 
 ## **✨ Capabilities & Features**
 
 * **Role-Based Access Control (RBAC):** Strict permission system (Admin/Manufacturer, Distributor, Retailer) to ensure only authorized wallet addresses can perform specific actions on the smart contract.  
-* **Product Minting:** Manufacturers (Role 1\) can create new products, logging their initial state securely on the blockchain.  
+* **Product Minting:** Manufacturers (Role 1\) can create new products, logging their initial state securely on the blockchain.
 * **Ownership Transfer & Auto-Status Updates:** Products can be transferred sequentially between supply chain entities (Manufacturer \-\> Distributor \-\> Retailer). The smart contract automatically updates the shipment status (e.g., Created \-\> InTransit \-\> Delivered) based on the receiver's defined role.  
 * **Global Shipment Tracking:** A public-facing tracking portal allows anyone to search for a product using its ID to view its real-time status, current owner, and a complete chronological history of handlers and timestamps.  
 * **QR Code Label Generator:** Built-in tool for Manufacturers to generate physical QR code labels for shipment boxes. Scanning these links directly to the public tracking portal for that specific product ID.  
