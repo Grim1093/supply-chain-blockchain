@@ -1,6 +1,4 @@
-# **Supply Chain Blockchain \- Project Context & Directives**
-
-You are assisting with the development and maintenance of the "Supply Chain Blockchain" project. Read the following context carefully to understand the project's goals, structure, and capabilities before suggesting any changes or writing new code.
+# **Supply Chain Blockchain**
 
 ## **🎯 Main Goal**
 
